@@ -1,16 +1,12 @@
 package com.example.sqlite
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.delay
-import java.util.*
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
@@ -23,9 +19,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_KEY = "EXTRA"
     }
-    val REQUEST_CODE = 1
+    private val REQUEST_CODE = 1
     //val REQUEST_CODE = 2
-    val REQUEST_CODE2 = 3
+    private val REQUEST_CODE2 = 3
         //дихелпер
     private val dbHelper = DBHelper(this)
     lateinit var list: MutableList<Contact>
@@ -41,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         buttonAdd = findViewById<Button>(R.id.buttonAdd)
         listText = findViewById<RecyclerView>(R.id.recyclerView)
 
-        changeList()
+        loadList()
 
 
 
@@ -73,18 +69,18 @@ class MainActivity : AppCompatActivity() {
 
     fun filter(text: String){
         if(text == ""){
-            changeList()
+            loadList()
         }else {
            // fun filter()
-            var contactList = dbHelper.getContacts()
-            list.clear()
-            for (contact in contactList) {
+            var filteredList = mutableListOf<Contact>()
+           // list.clear()
+            for (contact in list) {
                 if (contact.name.contains(text,true)||contact.surname.contains(text,true)) {
-                    list.add(contact)
+                    filteredList.add(contact)
 
                 }
             }
-            changeListFiltered(list)
+            changeListFiltered(filteredList)
         }
 
 
@@ -94,6 +90,11 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+                           private fun loadListFiltered(list: List<Contact>) {
+                          TODO("Not yet implemented")
+    }
+
     fun changeListFiltered(filters: MutableList<Contact>){
         adapter = RecyclerAdapter(filters) {
             if(it != -1) {
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         listText.adapter = adapter
     }
 
-    fun changeList(){
+    private fun loadList(){
         list = dbHelper.getContacts()
         adapter = RecyclerAdapter(list) {
             if(it != -1) {
@@ -141,6 +142,6 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        changeList()
+        loadList()
     }
 }
